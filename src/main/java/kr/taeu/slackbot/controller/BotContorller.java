@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BotContorller {
   private final MethodsClient methodsClient;
   
-  @GetMapping("/callapi")
+  @PostMapping("/callapi")
   public String callApi() {
     
     ChatPostMessageRequest request = ChatPostMessageRequest.builder()
