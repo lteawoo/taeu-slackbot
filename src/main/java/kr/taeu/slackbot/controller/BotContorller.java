@@ -2,10 +2,10 @@ package kr.taeu.slackbot.controller;
 
 import java.io.IOException;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.slack.api.Slack;
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
@@ -18,22 +18,24 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 public class BotContorller {
-  private final Slack slack;
+  private final MethodsClient methodsClient;
+  
+  @GetMapping("/callApi")
+  public String callApi() {
+    return "error";
+  }
   
   @PostMapping("/test")
   public String test() {
     log.info("test");
-    String token = "xoxb-1251509934998-1284369695216-thQJGwSyn60PrvU9VW4hLLtd";
-    
-    MethodsClient methods = slack.methods(token);
     
     ChatPostMessageRequest request = ChatPostMessageRequest.builder()
         .channel("#notice")
-        .text(":wave: Hi from a bot written in Java!")
+        .text(":wave: 장애발생!")
         .build();
     
     try {
-      ChatPostMessageResponse response = methods.chatPostMessage(request);
+      ChatPostMessageResponse response = methodsClient.chatPostMessage(request);
       log.info("response: " + response.toString());
       return response.getMessage().toString();
     } catch (IOException e) {
