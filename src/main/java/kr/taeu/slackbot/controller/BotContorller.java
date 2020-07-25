@@ -20,8 +20,23 @@ import lombok.extern.slf4j.Slf4j;
 public class BotContorller {
   private final MethodsClient methodsClient;
   
-  @GetMapping("/callApi")
+  @GetMapping("/callapi")
   public String callApi() {
+    
+    ChatPostMessageRequest request = ChatPostMessageRequest.builder()
+        .channel("#notice")
+        .text(":wave: 송신완료!")
+        .build();
+    
+    try {
+      ChatPostMessageResponse response = methodsClient.chatPostMessage(request);
+      log.info("response: " + response.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (SlackApiException e) {
+      e.printStackTrace();
+    }
+    
     return "error";
   }
   
