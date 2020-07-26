@@ -34,7 +34,7 @@ public class BotContorller {
       log.info("response: " + response.toString());
       
       RestTemplate restTemplate = new RestTemplate();
-      ret = restTemplate.getForObject("https://taeu-linebot.herokuapp.com/callApi", String.class);
+      ret = restTemplate.getForObject("https://taeu-linebot.herokuapp.com/callapi", String.class);
     } catch (IOException e) {
       e.printStackTrace();
     } catch (SlackApiException e) {
