@@ -2,9 +2,9 @@ package kr.taeu.slackbot.controller;
 
 import java.io.IOException;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
@@ -22,6 +22,7 @@ public class BotContorller {
   
   @PostMapping("/callapi")
   public String callApi() {
+    String ret = "";
     
     ChatPostMessageRequest request = ChatPostMessageRequest.builder()
         .channel("#notice")
@@ -31,13 +32,16 @@ public class BotContorller {
     try {
       ChatPostMessageResponse response = methodsClient.chatPostMessage(request);
       log.info("response: " + response.toString());
+      
+      RestTemplate restTemplate = new RestTemplate();
+      ret = restTemplate.getForObject("https://taeu-linebot.herokuapp.com/callApi", String.class);
     } catch (IOException e) {
       e.printStackTrace();
     } catch (SlackApiException e) {
       e.printStackTrace();
     }
     
-    return "error";
+    return ret;
   }
   
   @PostMapping("/test")
