@@ -56,7 +56,7 @@ public class BotContorller {
     }
     }
     
-    return "fail: You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">";
+    return "fail"+ payload.getCommand() +": You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">";
   }
   
   @PostMapping("/test")
