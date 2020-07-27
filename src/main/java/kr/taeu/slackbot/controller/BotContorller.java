@@ -49,7 +49,7 @@ public class BotContorller {
     
     // 3. Command 분기
     switch (payload.getCommand()) {
-    case "장애전파": {
+    case "/장애전파": {
       // 원하면 채널분기 가능
       restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/callapi", payload.getText(), String.class);
       return "success: You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">";
