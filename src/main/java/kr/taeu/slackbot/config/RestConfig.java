@@ -13,6 +13,7 @@ public class RestConfig {
   @Bean
   public RestTemplate restTemplate() {
     RestTemplate restTemplate = new RestTemplate();
+    // request시 한글 깨짐
     restTemplate.getMessageConverters().add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
     return restTemplate;
   }
