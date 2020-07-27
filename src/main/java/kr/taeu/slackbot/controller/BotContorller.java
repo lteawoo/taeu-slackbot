@@ -44,17 +44,19 @@ public class BotContorller {
     //   &trigger_id=123.123.123
     String requestBody = request.getReader().lines()
         .collect(Collectors.joining(System.lineSeparator()));
-    
     SlashCommandPayload payload = parser.parse(requestBody);
     
     // 3. Command 분기
     switch (payload.getCommand()) {
-    case "/장애전파": {
-      // 원하면 채널분기 가능
-      restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/callapi", payload.getText(), String.class);
-      return "success: You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">";
+      case "/장애전파": {
+        // 원하면 채널분기 가능
+        restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/callapi", payload.getText(), String.class);
+        return "success: You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">";
+      }
     }
-    }
+    
+    // 4. Respond to the Slack API server with 200 OK as an acknowledgment
+    // 응답값은 slash command 요청자만 보임
     
     return "fail"+ payload.getCommand() +": You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">";
   }
@@ -78,15 +80,5 @@ public class BotContorller {
       e.printStackTrace();
     }
     return "fail";
-  }
-  
-  @PostMapping("/test1")
-  public String test1(HttpServletRequest request) throws IOException {
-    String requestBody = request.getReader().lines()
-        .collect(Collectors.joining(System.lineSeparator()));
-    
-    log.info(requestBody);
-    
-    return requestBody;
   }
 }
