@@ -12,12 +12,14 @@ import org.springframework.web.client.RestTemplate;
 import com.slack.api.app_backend.slash_commands.SlashCommandPayloadParser;
 import com.slack.api.app_backend.slash_commands.payload.SlashCommandPayload;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BotService {
-  private RestTemplate restTemplate;
+  private final RestTemplate restTemplate;
   
   public String postToLineBot(HttpServletRequest request) {
     String msg = "";
