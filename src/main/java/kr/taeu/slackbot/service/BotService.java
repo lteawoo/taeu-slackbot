@@ -27,6 +27,8 @@ public class BotService {
       SlashCommandPayload payload = parsePayload(request)
           .orElseThrow(() -> new IllegalArgumentException());
     
+      log.info("service: " + payload.toString());
+      
       // 3. Command 분기
       switch (payload.getCommand()) {
         case "/장애전파": {
