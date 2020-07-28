@@ -41,10 +41,10 @@ public class BotService {
       // 응답값은 slash command 요청자만 보임
       msg = "success " + payload.getCommand() + ": You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">";
     } catch (IOException e) {
-      log.debug("postToLineBot: " + e);
+      log.info("postToLineBot: " + e);
       msg = "fail " + e;
     } catch (NullPointerException e) {
-      log.debug("postToLineBot: " + e);
+      log.info("postToLineBot: " + e);
       msg = "fail " + e;
     }
     
