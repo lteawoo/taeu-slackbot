@@ -1,4 +1,4 @@
-package kr.taeu.slackbot.config;
+package kr.taeu.slackbot.global.config;
 
 import java.nio.charset.Charset;
 

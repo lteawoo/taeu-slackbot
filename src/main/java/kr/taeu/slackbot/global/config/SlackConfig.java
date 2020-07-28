@@ -1,4 +1,4 @@
-package kr.taeu.slackbot.config;
+package kr.taeu.slackbot.global.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
