@@ -25,7 +25,7 @@ public class BotService {
     try {
       // TODO 요청값에 대한 결과값이 없을경우의 예외처리가 있는경우 변경
       SlashCommandPayload payload = parsePayload(request)
-          .orElseThrow(() -> new NullPointerException());
+          .orElseThrow(() -> new IllegalArgumentException());
     
       // 3. Command 분기
       switch (payload.getCommand()) {
@@ -43,7 +43,7 @@ public class BotService {
     } catch (IOException e) {
       log.info("postToLineBot: " + e);
       msg = "fail " + e;
-    } catch (NullPointerException e) {
+    } catch (IllegalArgumentException e) {
       log.info("postToLineBot: " + e);
       msg = "fail " + e;
     }
@@ -72,6 +72,10 @@ public class BotService {
     
     log.info(requestBody);
     
-    return Optional.ofNullable(parser.parse(requestBody));
+    SlashCommandPayload payload = parser.parse(requestBody);
+    
+    log.info(payload.toString());
+    
+    return Optional.ofNullable(payload);
   }
 }
