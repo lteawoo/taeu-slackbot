@@ -32,7 +32,7 @@ public class BotService {
     try {
       // TODO 요청값에 대한 결과값이 없을경우의 예외처리가 있는경우 변경
       SlashCommandPayload payload = parsePayload(request)
-          .orElseThrow(() -> new IllegalArgumentException());
+          .orElseThrow(() -> new IllegalArgumentException("SlashCommand payload parse fail"));
       
       // 3. Command 분기
       switch (payload.getCommand()) {
@@ -62,9 +62,6 @@ public class BotService {
     } catch (IOException e) {
       log.info("postToLineBot: " + e);
       msg = "fail " + e;
-    } catch (IllegalArgumentException e) {
-      log.info("postToLineBot: " + e);
-      msg = "fail " + e;
     }
     
     return msg;
@@ -88,7 +85,9 @@ public class BotService {
     
     String requestBody = request.getReader().lines()
           .collect(Collectors.joining(System.lineSeparator()));
-    
+    if ("".equals(requestBody)) {
+      throw new IllegalArgumentException("Slash Command request body must not be empty");
+    }
     SlashCommandPayload payload = parser.parse(requestBody);
     
     return Optional.ofNullable(payload);
