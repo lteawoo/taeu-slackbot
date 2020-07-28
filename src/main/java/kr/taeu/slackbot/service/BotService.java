@@ -70,6 +70,8 @@ public class BotService {
     String requestBody = request.getReader().lines()
           .collect(Collectors.joining(System.lineSeparator()));
     
+    log.info(requestBody);
+    
     return Optional.ofNullable(parser.parse(requestBody));
   }
 }
