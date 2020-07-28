@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 public class BotContorller {
-  private final RestTemplate restTemplate;
   private final MethodsClient methodsClient;
   private final BotService botService;
   
@@ -33,24 +32,8 @@ public class BotContorller {
     return botService.postToLineBot(request);
   }
   
-  @PostMapping("/test")
+  @PostMapping("/isRunning")
   public String test() {
-    log.info("test");
-    
-    ChatPostMessageRequest request = ChatPostMessageRequest.builder()
-        .channel("#notice")
-        .text(":wave: 장애발생!")
-        .build();
-    
-    try {
-      ChatPostMessageResponse response = methodsClient.chatPostMessage(request);
-      log.info("response: " + response.toString());
-      return response.getMessage().toString();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (SlackApiException e) {
-      e.printStackTrace();
-    }
-    return "fail";
+    return "run...";
   }
 }

@@ -11,6 +11,10 @@ import org.springframework.web.client.RestTemplate;
 
 import com.slack.api.app_backend.slash_commands.SlashCommandPayloadParser;
 import com.slack.api.app_backend.slash_commands.payload.SlashCommandPayload;
+import com.slack.api.methods.MethodsClient;
+import com.slack.api.methods.SlackApiException;
+import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class BotService {
   private final RestTemplate restTemplate;
+  private final MethodsClient methodsClient;
   
   public String postToLineBot(HttpServletRequest request) {
     String msg = "";
@@ -28,13 +33,23 @@ public class BotService {
       // TODO 요청값에 대한 결과값이 없을경우의 예외처리가 있는경우 변경
       SlashCommandPayload payload = parsePayload(request)
           .orElseThrow(() -> new IllegalArgumentException());
-    
-      log.info("service: " + payload.getCommand() + ": You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">");
       
       // 3. Command 분기
       switch (payload.getCommand()) {
         case "/장애전파": {
           restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/callapi", payload.getText(), String.class);
+          
+          //4. Slack에 메세지 전송
+          ChatPostMessageRequest messageRequest = ChatPostMessageRequest.builder()
+              .channel("#notice")
+              .text(":wave: 장애전파완료!")
+              .build();
+          try {
+            ChatPostMessageResponse response = methodsClient.chatPostMessage(messageRequest);
+            log.info("chat post response: " + response.toString());
+          } catch (SlackApiException e) {
+            log.info("Slack api error: " + e);
+          }
         }
         default: {
           msg = "fail " + payload.getCommand() + ": You said " + payload.getText() + ", at <#" + payload.getChannelId() + "|" + payload.getChannelName() + ">";
@@ -74,11 +89,7 @@ public class BotService {
     String requestBody = request.getReader().lines()
           .collect(Collectors.joining(System.lineSeparator()));
     
-    log.info(requestBody);
-    
     SlashCommandPayload payload = parser.parse(requestBody);
-    
-    log.info(payload.toString());
     
     return Optional.ofNullable(payload);
   }
