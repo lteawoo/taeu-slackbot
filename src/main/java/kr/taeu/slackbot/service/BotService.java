@@ -53,7 +53,7 @@ public class BotService {
             ChatPostMessageResponse response = methodsClient.chatPostMessage(req -> req
                 .channel("#notice")
                 .blocks(asBlocks(
-                    section(section -> section.text(markdownText("**장애전파완료**"))),
+                    section(section -> section.text(markdownText("*장애전파완료!*"))),
                     divider(),
                     actions(actions -> actions
                         .elements(asElements(
