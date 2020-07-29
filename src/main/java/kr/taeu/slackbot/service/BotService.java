@@ -1,5 +1,14 @@
 package kr.taeu.slackbot.service;
 
+import static com.slack.api.model.block.Blocks.actions;
+import static com.slack.api.model.block.Blocks.asBlocks;
+import static com.slack.api.model.block.Blocks.divider;
+import static com.slack.api.model.block.Blocks.section;
+import static com.slack.api.model.block.composition.BlockCompositions.markdownText;
+import static com.slack.api.model.block.composition.BlockCompositions.plainText;
+import static com.slack.api.model.block.element.BlockElements.asElements;
+import static com.slack.api.model.block.element.BlockElements.button;
+
 import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,7 +22,6 @@ import com.slack.api.app_backend.slash_commands.SlashCommandPayloadParser;
 import com.slack.api.app_backend.slash_commands.payload.SlashCommandPayload;
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
-import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -37,15 +45,30 @@ public class BotService {
       // 3. Command 분기
       switch (payload.getCommand()) {
         case "/장애전파": {
-          restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/callapi", payload.getText(), String.class);
+          restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/callapi"
+              , payload.getText(), String.class);
           
           //4. Slack에 메세지 전송
-          ChatPostMessageRequest messageRequest = ChatPostMessageRequest.builder()
-              .channel("#notice")
-              .text(":wave: 장애전파완료!")
-              .build();
           try {
-            ChatPostMessageResponse response = methodsClient.chatPostMessage(messageRequest);
+            ChatPostMessageResponse response = methodsClient.chatPostMessage(req -> req
+                .channel("#notice")
+                .blocks(asBlocks(
+                    section(section -> section.text(markdownText("## 장애전파완료"))),
+                    divider(),
+                    actions(actions -> actions
+                        .elements(asElements(
+                            button(b -> b.text(
+                                plainText(pt -> pt.emoji(true)
+                                    .text("Test1")))
+                                .value("v1")),
+                            button(b -> b.text(
+                                plainText(pt -> pt.emoji(true)
+                                    .text("Test2")))
+                                .value("t2"))
+                            ))
+                        )
+                    ))
+                );
             log.info("chat post response: " + response.toString());
           } catch (SlackApiException e) {
             log.info("Slack api error: " + e);
