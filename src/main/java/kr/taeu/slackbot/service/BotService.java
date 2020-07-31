@@ -166,6 +166,7 @@ public class BotService {
           
           return true;
       } catch (Exception e) {
+          e.printStackTrace();
           throw new Exception(e);
       }
   } 
