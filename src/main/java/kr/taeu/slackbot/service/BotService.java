@@ -90,14 +90,12 @@ public class BotService {
   }
   
   private Optional<SlashCommandPayload> parseSlashCommandPayload(HttpServletRequest request) {
-      Optional<SlashCommandPayload> ret = null;
-      
       try {
           // 1. slack request 확인
           if (!verifyRequestFromSlack(request)) {
               return Optional.empty();
           };
-          
+          log.info("pass");
           // 2. Parse the request body and check if the `command` is the one you'd like to handle
           SlashCommandPayloadParser parser = new SlashCommandPayloadParser();
           
@@ -111,14 +109,11 @@ public class BotService {
       
           String requestBody = request.getReader().lines()
                   .collect(Collectors.joining(System.lineSeparator()));
-          if ("".equals(requestBody)) {
-              ret = Optional.ofNullable(parser.parse(requestBody));
-          }
+          log.info("requestBody: " + parser.parse(requestBody));
+          return Optional.ofNullable(parser.parse(requestBody));
       } catch (Exception e) {
-          ret = Optional.empty();
+          return Optional.empty();
       }
-      
-      return ret;
   }
   
   private boolean verifyRequestFromSlack(HttpServletRequest request) {
