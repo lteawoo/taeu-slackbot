@@ -93,8 +93,8 @@ public class BotService {
       Optional<SlashCommandPayload> ret = null;
       
       try {
-          // 1. slack request 검증
-          if (verifyRequestFromSlack(request)) {
+          // 1. slack request 확인
+          if (!verifyRequestFromSlack(request)) {
               return Optional.empty();
           };
           
@@ -127,7 +127,7 @@ public class BotService {
           // https://api.slack.com/docs/verifying-requests-from-slack
           // This needs "X-Slack-Signature" header, "X-Slack-Request-Timestamp" header, and raw request body
     
-          // 1. 현재시간과 5분 이상 다르지 않은지 확인\
+          // 1. 현재시간과 5분 이상 다르지 않은지 확인
           Enumeration<String> headerNames = request.getHeaderNames();
           while (headerNames.hasMoreElements()) {
               String headerName = headerNames.nextElement();
@@ -143,24 +143,20 @@ public class BotService {
           
           String requestBody = request.getReader().lines()
                   .collect(Collectors.joining(System.lineSeparator()));
-          log.info("requestBodywqwqwq: " + requestBody);
+          log.info("requestBody: " + requestBody);
           if ("".equals(requestBody)) {
-              log.info("???????");
               return false;
           }
           
-          log.info("qqqq");
           // 2. 각 파트 연결
           String baseString = String.format("v0:%d:%s", timestamp, requestBody);
           log.info("baseString: " + baseString);
           
           // 3. 서명 생성
           String signature = request.getHeader("x-slack-signature");
-          log.info("sign: " + signature);
-          
           String mySignature = "v0=" + new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secret)
                   .hmacHex(baseString);
-          log.info("my: " + mySignature);
+          log.info("sign: " +signature + ", my: " + mySignature + "\n equal: " + signature.equals(mySignature));
           
           if (!signature.equals(mySignature)) {
               return false;
@@ -169,8 +165,7 @@ public class BotService {
           return true;
       } catch (Exception e) {
           log.info("error: " + e);
+          return false;
       }
-      
-      return false;
   } 
 }
