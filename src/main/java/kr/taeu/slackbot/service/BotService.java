@@ -144,6 +144,7 @@ public class BotService {
               .collect(Collectors.joining(System.lineSeparator()));
       log.info("requestBody: " + requestBody);
       if ("".equals(requestBody)) {
+          log.info("???????");
           return false;
       }
       
