@@ -111,7 +111,7 @@ public class BotService {
       
           String requestBody = request.getReader().lines()
                   .collect(Collectors.joining(System.lineSeparator()));
-          if (!"".equals(requestBody)) {
+          if ("".equals(requestBody)) {
               ret = Optional.ofNullable(parser.parse(requestBody));
           }
       } catch (Exception e) {
