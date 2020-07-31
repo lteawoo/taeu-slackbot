@@ -112,7 +112,6 @@ public class BotService {
           //   &user_id=U2147483697&user_name=Steve
           //   &command=weather&text=94070&response_url=https://hooks.slack.com/commands/1234/5678
           //   &trigger_id=123.123.123
-          
           return Optional.ofNullable(parser.parse(requestBody));
       } catch (Exception e) {
           return Optional.empty();

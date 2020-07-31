@@ -4,7 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.slack.api.app_backend.slash_commands.payload.SlashCommandPayload;
 
 import kr.taeu.slackbot.service.BotService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +20,8 @@ public class BotContorller {
   private final BotService botService;
   
   @PostMapping("/callapi")
-  public String callApi(HttpServletRequest request) {
+  public String callApi(HttpServletRequest request, @RequestBody SlashCommandPayload payload) {
+    log.info("payload: " + payload);
     return botService.postToLineBot(request);
   }
   
