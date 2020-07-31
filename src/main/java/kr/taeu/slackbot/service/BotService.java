@@ -91,11 +91,17 @@ public class BotService {
   
   private Optional<SlashCommandPayload> parseSlashCommandPayload(HttpServletRequest request) {
       try {
+          String requestBody = request.getReader().lines()
+                  .collect(Collectors.joining(System.lineSeparator()));
+          if ("".equals(requestBody)) {
+              return Optional.empty();
+          }
+          
           // 1. slack request 확인
-          if (!verifyRequestFromSlack(request)) {
+          if (!verifyRequestFromSlack(request, requestBody)) {
               return Optional.empty();
           };
-          log.info("pass");
+
           // 2. Parse the request body and check if the `command` is the one you'd like to handle
           SlashCommandPayloadParser parser = new SlashCommandPayloadParser();
           
@@ -106,18 +112,14 @@ public class BotService {
           //   &user_id=U2147483697&user_name=Steve
           //   &command=weather&text=94070&response_url=https://hooks.slack.com/commands/1234/5678
           //   &trigger_id=123.123.123
-      
-          String requestBody = request.getReader().lines()
-                  .collect(Collectors.joining(System.lineSeparator()));
-          log.info("requestBody: " + requestBody);
-          log.info("requestBody: " + parser.parse(requestBody));
+          
           return Optional.ofNullable(parser.parse(requestBody));
       } catch (Exception e) {
           return Optional.empty();
       }
   }
   
-  private boolean verifyRequestFromSlack(HttpServletRequest request) {
+  private boolean verifyRequestFromSlack(HttpServletRequest request, String requestBody) {
       try {
           // Verify requests from Slack
           // https://api.slack.com/docs/verifying-requests-from-slack
@@ -134,13 +136,6 @@ public class BotService {
           Long currentTimeStamp = Instant.now().getEpochSecond();
           log.info("timestamp: " + timestamp + ", " + currentTimeStamp);
           if (Math.abs(currentTimeStamp - timestamp) > 60 * 5) {
-              return false;
-          }
-          
-          String requestBody = request.getReader().lines()
-                  .collect(Collectors.joining(System.lineSeparator()));
-          log.info("requestBody: " + requestBody);
-          if ("".equals(requestBody)) {
               return false;
           }
           
