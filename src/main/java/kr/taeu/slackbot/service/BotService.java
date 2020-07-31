@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class BotService {
+  private final String secret = System.getenv("SLACK_SECRET");
   private final RestTemplate restTemplate;
   private final MethodsClient methodsClient;
   
@@ -147,11 +149,16 @@ public class BotService {
       
       // 2. 각 파트 연결
       String baseString = "v0:" + timestamp + ":" + requestBody;
+      log.info("baseString: " + baseString);
       
       // 3. 서명 생성
       String signature = request.getHeader("x-slack-signature");
-      String mySignature = "v0=" + new HmacUtils(HmacAlgorithms.HMAC_SHA_256, signature).hmacHex(baseString);
-      log.info("sign: " + signature + ", my: " + mySignature);
+      log.info("sign: " + signature);
+      
+      String mySignature = "v0=" + new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secret)
+              .hmacHex(baseString);
+      log.info("my: " + mySignature);
+      
       if (!signature.equals(mySignature)) {
           return false;
       }
