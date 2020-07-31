@@ -11,6 +11,7 @@ import static com.slack.api.model.block.element.BlockElements.button;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Enumeration;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -87,8 +88,6 @@ public class BotService {
   }
   
   private Optional<SlashCommandPayload> parseSlashCommandPayload(HttpServletRequest request) {
-      log.info("slackrequest: " + request);
-      
       Optional<SlashCommandPayload> ret = null;
       
       try {
@@ -125,7 +124,12 @@ public class BotService {
       // https://api.slack.com/docs/verifying-requests-from-slack
       // This needs "X-Slack-Signature" header, "X-Slack-Request-Timestamp" header, and raw request body
 
-      // 1. 현재시간과 5분 이상 다르지 않은지 확인
+      // 1. 현재시간과 5분 이상 다르지 않은지 확인\
+      Enumeration<String> headerNames = request.getHeaderNames();
+      while (headerNames.hasMoreElements()) {
+          log.info("header " + headerNames.nextElement());
+      }
+      
       Long timestamp = Long.parseLong(request.getHeader("X-Slack-Request-Timestamp"));
       Long currentTimeStamp = Instant.now().getEpochSecond();
       if (Math.abs(currentTimeStamp - timestamp) > 60 * 5) {
