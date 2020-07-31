@@ -127,7 +127,8 @@ public class BotService {
       // 1. 현재시간과 5분 이상 다르지 않은지 확인\
       Enumeration<String> headerNames = request.getHeaderNames();
       while (headerNames.hasMoreElements()) {
-          log.info("header " + headerNames.nextElement());
+          String headerName = headerNames.nextElement();
+          log.info("header " + headerName + request.getHeader(headerName));
       }
       
       Long timestamp = Long.parseLong(request.getHeader("x-slack-request-timestamp"));
