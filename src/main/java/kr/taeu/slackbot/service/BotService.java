@@ -142,12 +142,13 @@ public class BotService {
       
       String requestBody = request.getReader().lines()
               .collect(Collectors.joining(System.lineSeparator()));
-      log.info("requestBody: " + requestBody);
+      log.info("requestBodywqwqwq: " + requestBody);
       if ("".equals(requestBody)) {
           log.info("???????");
           return false;
       }
       
+      log.info("qqqq");
       // 2. 각 파트 연결
       String baseString = String.format("v0:%l:%s", timestamp, requestBody);
       log.info("baseString: " + baseString);
