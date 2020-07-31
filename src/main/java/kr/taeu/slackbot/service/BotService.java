@@ -130,7 +130,7 @@ public class BotService {
           log.info("header " + headerNames.nextElement());
       }
       
-      Long timestamp = Long.parseLong(request.getHeader("X-Slack-Request-Timestamp"));
+      Long timestamp = Long.parseLong(request.getHeader("x-slack-request-timestamp"));
       Long currentTimeStamp = Instant.now().getEpochSecond();
       if (Math.abs(currentTimeStamp - timestamp) > 60 * 5) {
           return false;
@@ -146,9 +146,9 @@ public class BotService {
       String baseString = "v0:" + timestamp + ":" + requestBody;
       
       // 3. 서명 생성
-      String signature = request.getHeader("X-Slack-Signature");
+      String signature = request.getHeader("x-slack-signature");
       String mySignature = "v0=" + new HmacUtils(HmacAlgorithms.HMAC_SHA_256, signature).hmacHex(baseString);
-      
+      log.info("sign: " + signature + ", my: " + mySignature);
       if (!signature.equals(mySignature)) {
           return false;
       }
