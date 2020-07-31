@@ -143,13 +143,13 @@ public class BotService {
           
           String requestBody = request.getReader().lines()
                   .collect(Collectors.joining(System.lineSeparator()));
-          log.info("requestBody :" + requestBody);
+          log.info("requestBody: " + requestBody);
           if (!"".equals(requestBody)) {
               return false;
           }
           
           // 2. 각 파트 연결
-          String baseString = "v0:" + String.valueOf(timestamp) + ":" + requestBody;
+          String baseString = String.format("v0:%l:%s", timestamp, requestBody);
           log.info("baseString: " + baseString);
           
           // 3. 서명 생성
