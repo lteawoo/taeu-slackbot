@@ -109,6 +109,7 @@ public class BotService {
       
           String requestBody = request.getReader().lines()
                   .collect(Collectors.joining(System.lineSeparator()));
+          log.info("requestBody: " + requestBody);
           log.info("requestBody: " + parser.parse(requestBody));
           return Optional.ofNullable(parser.parse(requestBody));
       } catch (Exception e) {
