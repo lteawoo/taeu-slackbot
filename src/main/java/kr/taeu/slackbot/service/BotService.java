@@ -151,7 +151,7 @@ public class BotService {
           
           log.info("qqqq");
           // 2. 각 파트 연결
-          String baseString = String.format("v0:%l:%s", timestamp, requestBody);
+          String baseString = String.format("v0:%d:%s", timestamp, requestBody);
           log.info("baseString: " + baseString);
           
           // 3. 서명 생성
