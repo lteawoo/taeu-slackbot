@@ -133,12 +133,14 @@ public class BotService {
       
       Long timestamp = Long.parseLong(request.getHeader("x-slack-request-timestamp"));
       Long currentTimeStamp = Instant.now().getEpochSecond();
+      log.info("timestamp: " + timestamp + ", " + currentTimeStamp);
       if (Math.abs(currentTimeStamp - timestamp) > 60 * 5) {
           return false;
       }
       
       String requestBody = request.getReader().lines()
               .collect(Collectors.joining(System.lineSeparator()));
+      log.info("requestBody :" + requestBody);
       if (!"".equals(requestBody)) {
           return false;
       }
