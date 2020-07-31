@@ -122,47 +122,51 @@ public class BotService {
   }
   
   private boolean verifyRequestFromSlack(HttpServletRequest request) throws Exception {
-      // Verify requests from Slack
-      // https://api.slack.com/docs/verifying-requests-from-slack
-      // This needs "X-Slack-Signature" header, "X-Slack-Request-Timestamp" header, and raw request body
-
-      // 1. 현재시간과 5분 이상 다르지 않은지 확인\
-      Enumeration<String> headerNames = request.getHeaderNames();
-      while (headerNames.hasMoreElements()) {
-          String headerName = headerNames.nextElement();
-          log.info("header " + headerName + request.getHeader(headerName));
+      try {
+          // Verify requests from Slack
+          // https://api.slack.com/docs/verifying-requests-from-slack
+          // This needs "X-Slack-Signature" header, "X-Slack-Request-Timestamp" header, and raw request body
+    
+          // 1. 현재시간과 5분 이상 다르지 않은지 확인\
+          Enumeration<String> headerNames = request.getHeaderNames();
+          while (headerNames.hasMoreElements()) {
+              String headerName = headerNames.nextElement();
+              log.info("header " + headerName + request.getHeader(headerName));
+          }
+          
+          Long timestamp = Long.parseLong(request.getHeader("x-slack-request-timestamp"));
+          Long currentTimeStamp = Instant.now().getEpochSecond();
+          log.info("timestamp: " + timestamp + ", " + currentTimeStamp);
+          if (Math.abs(currentTimeStamp - timestamp) > 60 * 5) {
+              return false;
+          }
+          
+          String requestBody = request.getReader().lines()
+                  .collect(Collectors.joining(System.lineSeparator()));
+          log.info("requestBody :" + requestBody);
+          if (!"".equals(requestBody)) {
+              return false;
+          }
+          
+          // 2. 각 파트 연결
+          String baseString = "v0:" + String.valueOf(timestamp) + ":" + requestBody;
+          log.info("baseString: " + baseString);
+          
+          // 3. 서명 생성
+          String signature = request.getHeader("x-slack-signature");
+          log.info("sign: " + signature);
+          
+          String mySignature = "v0=" + new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secret)
+                  .hmacHex(baseString);
+          log.info("my: " + mySignature);
+          
+          if (!signature.equals(mySignature)) {
+              return false;
+          }
+          
+          return true;
+      } catch (Exception e) {
+          throw new Exception(e);
       }
-      
-      Long timestamp = Long.parseLong(request.getHeader("x-slack-request-timestamp"));
-      Long currentTimeStamp = Instant.now().getEpochSecond();
-      log.info("timestamp: " + timestamp + ", " + currentTimeStamp);
-      if (Math.abs(currentTimeStamp - timestamp) > 60 * 5) {
-          return false;
-      }
-      
-      String requestBody = request.getReader().lines()
-              .collect(Collectors.joining(System.lineSeparator()));
-      log.info("requestBody :" + requestBody);
-      if (!"".equals(requestBody)) {
-          return false;
-      }
-      
-      // 2. 각 파트 연결
-      String baseString = "v0:" + timestamp + ":" + requestBody;
-      log.info("baseString: " + baseString);
-      
-      // 3. 서명 생성
-      String signature = request.getHeader("x-slack-signature");
-      log.info("sign: " + signature);
-      
-      String mySignature = "v0=" + new HmacUtils(HmacAlgorithms.HMAC_SHA_256, secret)
-              .hmacHex(baseString);
-      log.info("my: " + mySignature);
-      
-      if (!signature.equals(mySignature)) {
-          return false;
-      }
-      
-      return true;
-  }
+  } 
 }
