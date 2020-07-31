@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BotService {
+public class SlackBotMessageSendService {
   private final String secret = System.getenv("SLACK_SECRET");
   private final RestTemplate restTemplate;
   private final MethodsClient methodsClient;

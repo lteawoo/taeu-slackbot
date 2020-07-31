@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.slack.api.app_backend.slash_commands.payload.SlashCommandPayload;
 
-import kr.taeu.slackbot.service.BotService;
+import kr.taeu.slackbot.service.SlackBotMessageSendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class BotContorller {
-  private final BotService botService;
+public class SlackBotMessageSendController {
+  private final SlackBotMessageSendService slackBotMessageSendService;
   
-  @PostMapping("/callapi")
-  public String callApi(HttpServletRequest request) {
-    return botService.postToLineBot(request);
+  @PostMapping("/notifytoline")
+  public String notifyToLine(HttpServletRequest request) {
+    return slackBotMessageSendService.postToLineBot(request);
   }
   
   @GetMapping("/isRunning")
