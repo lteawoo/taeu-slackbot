@@ -20,8 +20,7 @@ public class BotContorller {
   private final BotService botService;
   
   @PostMapping("/callapi")
-  public String callApi(HttpServletRequest request, SlashCommandPayload payload) {
-    log.info("payload: " + payload);
+  public String callApi(HttpServletRequest request) {
     return botService.postToLineBot(request);
   }
   
