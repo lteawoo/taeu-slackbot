@@ -54,7 +54,7 @@ public class SlackBotMessageService {
           case "/장애전파": {
               log.info("groupID: " + LineBotGroup.DEV1.getGroupId());
               NotifyToLineRequest notifyToLineRequest = NotifyToLineRequest.builder()
-                      .lineGroupId(LineBotGroup.DEV1)
+                      .lineGroupId(LineBotGroup.DEV1.getGroupId())
                       .message(payload.getText())
                       .build();
               restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/notify", notifyToLineRequest,
