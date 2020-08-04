@@ -29,13 +29,15 @@ import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.response.chat.ChatPostMessageResponse;
 
+import kr.taeu.slackbot.dto.NotifyToLineRequest;
+import kr.taeu.slackbot.model.LineBotGroup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SlackBotMessageSendService {
+public class SlackBotMessageService {
   private final String secret = System.getenv("SLACK_SECRET");
   private final RestTemplate restTemplate;
   private final MethodsClient methodsClient;
@@ -50,8 +52,13 @@ public class SlackBotMessageSendService {
           // 3. Command 분기
           switch (payload.getCommand()) {
           case "/장애전파": {
-              restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/callapi", payload.getText(),
-                      String.class);
+              log.info("groupID: " + LineBotGroup.DEV1);
+              NotifyToLineRequest notifyToLineRequest = NotifyToLineRequest.builder()
+                      .lineGroupId(LineBotGroup.DEV1)
+                      .message(payload.getText())
+                      .build();
+              restTemplate.postForEntity("https://taeu-linebot.herokuapp.com/notify", notifyToLineRequest,
+                      NotifyToLineRequest.class);
 
               // 4. Slack에 메세지 전송
               try {
