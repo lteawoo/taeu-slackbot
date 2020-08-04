@@ -52,7 +52,7 @@ public class SlackBotMessageService {
           // 3. Command 분기
           switch (payload.getCommand()) {
           case "/장애전파": {
-              log.info("groupID: " + LineBotGroup.DEV1);
+              log.info("groupID: " + LineBotGroup.DEV1.getGroupId());
               NotifyToLineRequest notifyToLineRequest = NotifyToLineRequest.builder()
                       .lineGroupId(LineBotGroup.DEV1)
                       .message(payload.getText())
